@@ -1,6 +1,14 @@
 const forms = () => {
     const form = document.querySelectorAll('form'),
-        input = document.querySelectorAll('input');
+        input = document.querySelectorAll('input'),
+        phoneInput = document.querySelectorAll('input[name="user_phone"]');
+
+    
+    phoneInput.forEach(item => {
+        item.addEventListener('input', () => {
+            item.value = item.value.replace(/\D/, "");
+        });
+    });
 
     const message = {
         loading: 'Загрузка...',
@@ -9,7 +17,7 @@ const forms = () => {
     };
 
     const postData = async (url, data) => {
-        document.querySelector('status').textContent = message.loading;
+        document.querySelector('.status').textContent = message.loading;
         let res = await fetch(url, {
             method: 'POST',
             body: data
@@ -26,7 +34,7 @@ const forms = () => {
 
     form.forEach(item => {
         item.addEventListener('submit', (e) => {
-            e.preventDefault;
+            e.preventDefault();
 
             let statusMessage = document.createElement('div');
             statusMessage.classList.add('status');
