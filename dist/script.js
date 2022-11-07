@@ -17841,6 +17841,7 @@ __webpack_require__.r(__webpack_exports__);
 window.addEventListener('DOMContentLoaded', function () {
   "use strict";
 
+  var modalState = {};
   Object(_modules_modals__WEBPACK_IMPORTED_MODULE_1__["default"])();
   Object(_modules_tabs__WEBPACK_IMPORTED_MODULE_2__["default"])('.glazing_slider', '.glazing_block', '.glazing_content', 'active', 'block');
   Object(_modules_tabs__WEBPACK_IMPORTED_MODULE_2__["default"])('.decoration_slider', '.no_click', '.decoration_content > div > div', 'after_click');
@@ -17969,15 +17970,25 @@ __webpack_require__.r(__webpack_exports__);
 
 var modals = function modals() {
   function bindModal(triggerSelector, modalSelector, closeSelector) {
+    var closeClickOverlay = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
     var trigger = document.querySelectorAll(triggerSelector),
         modal = document.querySelector(modalSelector),
-        close = document.querySelector(closeSelector);
+        close = document.querySelector(closeSelector),
+        windows = document.querySelectorAll('[data-modal]');
+
+    var closeWindows = function closeWindows() {
+      windows.forEach(function (item) {
+        item.style.display = 'none';
+      });
+    };
+
     trigger.forEach(function (item) {
       item.addEventListener('click', function (e) {
         if (e.target) {
           e.preventDefault();
         }
 
+        closeWindows();
         modal.style.display = 'block'; //scroll block
 
         document.body.style.overflow = 'hidden'; //вместо overflow: hidden используем класс из bootstrap
@@ -17985,11 +17996,13 @@ var modals = function modals() {
       });
     });
     close.addEventListener('click', function () {
+      closeWindows();
       modal.style.display = 'none';
       document.body.style.overflow = ''; // document.body.classList.remove('modal-open');
     });
     modal.addEventListener('click', function (e) {
-      if (e.target === modal) {
+      if (e.target === modal && closeClickOverlay) {
+        closeWindows();
         modal.style.display = 'none';
         document.body.style.overflow = ''; // document.body.classList.remove('modal-open');
       }
@@ -18006,8 +18019,9 @@ var modals = function modals() {
   bindModal('.popup_engineer_btn', '.popup_engineer', '.popup_engineer .popup_close');
   bindModal('.phone_link', '.popup', '.popup .popup_close'); // showModalByTime('.popup', 3000);
 
-  bindModal('.popup_calc_btn', '.popup_calc', '.popup_calc_close'); // bindModal('.popup_calc_button', '.popup_calc_profile',  '.popup_calc_profile_close');
-  // bindModal('.popup_calc_profile_button', '.popup_calc_end', '.popup_calc_end_close');
+  bindModal('.popup_calc_btn', '.popup_calc', '.popup_calc_close');
+  bindModal('.popup_calc_button', '.popup_calc_profile', '.popup_calc_profile_close', false);
+  bindModal('.popup_calc_profile_button', '.popup_calc_end', '.popup_calc_end_close', false);
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (modals);
